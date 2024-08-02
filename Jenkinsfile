@@ -8,7 +8,7 @@ pipeline {
             }
         }
 
-         stage('Install SDK') {
+        stage('Install SDK') {
             steps {
                 bat '''
                 echo Install .NET SDK 6
@@ -23,28 +23,28 @@ pipeline {
             steps {
                 bat 'dotnet restore SeleniumIde.sln'
             }
-         }
+        }
 
-         stage('Building') {
+        stage('Building') {
             steps {
                 bat 'dotnet build SeleniumIde.sln --configuration Release'
             }
-         }
+        }
 
-     stage('Run tests') {
+        stage('Run tests') {
             steps {
                 bat 'dotnet test SeleniumIde.sln --logger "trx;LogFileName=TestResults.trx"'
             }
-         }  
+        }  
     }
 
-         post {
-            always {
-                archiveArtifacts artifacts: '**/TestResults/*.trx', allowEmptyArchive = true
-                step ([
-                    $class: 'MSTestPublisher',
-                    testResultsFile: '**/TestResults/*.trx'
-                ])
-            }
-         } 
+    post {
+        always {
+            archiveArtifacts artifacts: '**/TestResults/*.trx', allowEmptyArchive: true
+            step([
+                $class: 'MSTestPublisher',
+                testResultsFile: '**/TestResults/*.trx'
+            ])
+        }
+    } 
 }
